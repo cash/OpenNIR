@@ -38,7 +38,7 @@ class ClefEnglishDataset(datasets.ClefDataset):
         return self.index_stem
 
     def init(self, force=False):
-        # Support both English and Russian queries 
+        # Support both English and Russian queries
         # TODO: how to relate Russian queries to English docs(unclear for now)
 
         for lang, year in product(['en', 'ru'], ['03', '04']):
@@ -46,17 +46,19 @@ class ClefEnglishDataset(datasets.ClefDataset):
                 subset=f'{lang}{year}',
                 topic_files=[f'clef03-04/Top-{lang}{year}.txt'],
                 heldout_topics=HELDOUT_VALD_03 if lang == 'en' and year == '03' else [],
+                qid_prefix='C',
                 encoding="ISO-8859-1" if lang == 'en' else 'UTF-8-SIG',
                 xml_prefix=f'{lang}-'.upper(),
                 force=force)
-        
+
             self._init_qrels(
                 subset=f'{lang}{year}',
+                heldout_topics=HELDOUT_VALD_03 if lang == 'en' and year == '03' else [],
                 qrels_files=[f'clef03-04/qrels_en_20{year}'],
                 force=force)
 
         self._init_indices_parallel(
-            indices=[self.index_spanish, self.doc_store],
+            indices=[self.index, self.index_stem, self.doc_store],
             doc_iter=self._init_collection_iter(
                 doc_paths=['clef03-04/endocs'],
                 encoding="ISO-8859-2"),

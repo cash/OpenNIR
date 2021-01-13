@@ -19,7 +19,7 @@ class ClefDataset(datasets.IndexBackedDataset):
         result.update({
             'subset': '', #TODO supporting 03/04 en/ru topics
             'ranktopk': 1000,
-            'querysource': 'topic', 
+            'querysource': 'topic',
         })
         return result
 
@@ -49,11 +49,12 @@ class ClefDataset(datasets.IndexBackedDataset):
     def _init_topics(self, subset, topic_files, heldout_topics=None, qid_prefix=None, encoding=None, xml_prefix=None, force=False, expected_md5=None):
         topicf = os.path.join(util.path_dataset(self), f'{subset}.topics')
         topicf_heldout = os.path.join(util.path_dataset(self), f'{subset}-heldout.topics')
+        heldout_topics = heldout_topics or []
         if (force or not os.path.exists(topicf)) and self._confirm_dua():
             topics, topics_heldout = [], []
             for topic_file in _join_paths(topic_files):
                 opener = gzip.open if topic_file.endswith('.gz') else open
-                for t, qid, text in trec.parse_query_format(opener(topic_file), xml_prefix): 
+                for t, qid, text in trec.parse_query_format(opener(topic_file, encoding=encoding), xml_prefix):
                     if qid_prefix is not None:
                         qid = qid.replace(qid_prefix, '')
                     if t in heldout_topics:
@@ -64,11 +65,17 @@ class ClefDataset(datasets.IndexBackedDataset):
             if len(topics_heldout) > 0:
                 plaintext.write_tsv(topicf_heldout, topics_heldout)
 
-    def _init_qrels(self, subset, qrels_files, force=False, expected_md5=None):
+    def _init_qrels(self, subset, qrels_files, heldout_topics=None, force=False, expected_md5=None):
         qrelsf = os.path.join(util.path_dataset(self), f'{subset}.qrels')
-        if (force or not os.path.exists(qrelsf)) and self._confirm_dua(): 
+        qrelsf_heldout = os.path.join(util.path_dataset(self), f'{subset}-heldout.qrels')
+        heldout_topics = heldout_topics or []
+        if (force or not os.path.exists(qrelsf)) and self._confirm_dua():
             qrels = itertools.chain(*(trec.read_qrels(open(f)) for f in _join_paths(qrels_files) ))
-            trec.write_qrels(qrelsf, qrels)
+            trec.write_qrels(qrelsf, (q for q in qrels if q[0] not in heldout_topics))
+            if len(heldout_topics) > 0:
+                qrels = itertools.chain(*(trec.read_qrels(open(f)) for f in _join_paths(qrels_files) ))
+                trec.write_qrels(qrelsf_heldout, (q for q in qrels if q[0] in heldout_topics))
+
 
     def _init_collection_iter(self, doc_paths, encoding):
         doc_paths = _join_paths(doc_paths)
@@ -77,4 +84,4 @@ class ClefDataset(datasets.IndexBackedDataset):
         return doc_iter
 
 def _join_paths(paths):
-    return (os.path.join(util.get_working(), p) for p in paths)
+    return (os.path.join(util.get_working(), 'datasets', p) for p in paths)
