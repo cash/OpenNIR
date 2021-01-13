@@ -9,6 +9,10 @@ from onir.datasets.multilingual_dataset import MultilingualDataset
 from onir.datasets import antique, base, car, index_backed, msmarco, random, robust, flex, wikir, nyt, covid
 from onir.datasets import trec_arabic, trec_mandarin, trec_spanish
 
+# Datasets for CLEF
+from onir.datasets.clef_dataset import ClefDataset
+from onir.datasets.clef_en import ClefEnglishDataset
+
 # Default iteration functions over datasets
 from onir.datasets.query_iter import QueryIter as query_iter
 from onir.datasets.doc_iter import DocIter as doc_iter
