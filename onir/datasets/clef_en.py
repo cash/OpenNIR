@@ -23,17 +23,19 @@ class ClefEnglishDataset(datasets.ClefDataset):
 
     def __init__(self, config, vocab, logger):
         super().__init__(config, logger, vocab)
-        self.index_spanish = indices.AnseriniIndex(os.path.join(util.path_dataset(self), 'anserini.en'), lang=self._lang())
-        self.doc_store = indices.SqliteDocstore(os.path.join(util.path_dataset(self), 'docs.sqlite'))
+        base_path = util.path_dataset(self)
+        self.index = indices.AnseriniIndex(os.path.join(base_path, 'anserini'), stemmer='none')
+        self.index_stem = indices.AnseriniIndex(os.path.join(base_path, 'anserini.porter'), stemmer='porter')
+        self.doc_store = indices.SqliteDocstore(os.path.join(base_path, 'docs.sqllite'))
+
+    def _get_index(self, record):
+        return self.index
 
     def _get_docstore(self):
         return self.doc_store
 
-    def _lang(self):
-        return 'es'
-
     def _get_index_for_batchsearch(self):
-        return self.index_spanish
+        return self.index_stem
 
     def init(self, force=False):
         # Support both English and Russian queries 

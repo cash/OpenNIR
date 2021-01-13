@@ -10,6 +10,8 @@ class ClefDataset(datasets.IndexBackedDataset):
     """
     Abstract class for CLEF03/04 dataset
     """
+    DUA = """Will use CLEF03 04 data locally"""
+
 
     @staticmethod
     def default_config():
@@ -49,7 +51,7 @@ class ClefDataset(datasets.IndexBackedDataset):
         topicf_heldout = os.path.join(util.path_dataset(self), f'{subset}-heldout.topics')
         if (force or not os.path.exists(topicf)) and self._confirm_dua():
             topics, topics_heldout = [], []
-            for topic_file in topic_files:
+            for topic_file in _join_paths(topic_files):
                 opener = gzip.open if topic_file.endswith('.gz') else open
                 for t, qid, text in trec.parse_query_format(opener(topic_file), xml_prefix): 
                     if qid_prefix is not None:
@@ -65,11 +67,14 @@ class ClefDataset(datasets.IndexBackedDataset):
     def _init_qrels(self, subset, qrels_files, force=False, expected_md5=None):
         qrelsf = os.path.join(util.path_dataset(self), f'{subset}.qrels')
         if (force or not os.path.exists(qrelsf)) and self._confirm_dua(): 
-            qrels = itertools.chain(*(trec.read_qrels(open(f)) for f in qrels_files))
+            qrels = itertools.chain(*(trec.read_qrels(open(f)) for f in _join_paths(qrels_files) ))
             trec.write_qrels(qrelsf, qrels)
 
     def _init_collection_iter(self, doc_paths, encoding):
-        doc_paths = (os.path.join(util.path_dataset(self), p) for p in doc_paths)
+        doc_paths = _join_paths(doc_paths)
         doc_iter = itertools.chain(*(trec.parse_doc_format(p, encoding) for p in doc_paths))
         doc_iter = self.logger.pbar(doc_iter, desc='documents')
         return doc_iter
+
+def _join_paths(paths):
+    return (os.path.join(util.get_working(), p) for p in paths)
