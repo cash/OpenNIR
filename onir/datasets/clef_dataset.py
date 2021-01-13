@@ -54,7 +54,7 @@ class ClefDataset(datasets.IndexBackedDataset):
             topics, topics_heldout = [], []
             for topic_file in _join_paths(topic_files):
                 opener = gzip.open if topic_file.endswith('.gz') else open
-                for t, qid, text in trec.parse_query_format(opener(topic_file, encoding=encoding), xml_prefix):
+                for t, qid, text in parse_clef_query_format(opener(topic_file, encoding=encoding), xml_prefix):
                     if qid_prefix is not None:
                         qid = qid.replace(qid_prefix, '')
                     if t in heldout_topics:
@@ -85,3 +85,29 @@ class ClefDataset(datasets.IndexBackedDataset):
 
 def _join_paths(paths):
     return (os.path.join(util.get_working(), 'datasets', p) for p in paths)
+
+def parse_clef_query_format(file, xml_prefix=None):
+    if xml_prefix is None:
+        xml_prefix = ''
+
+    num, title, desc, narr, reading = None, None, None, None, None
+    for line in file:
+        if line.startswith('**'):
+            continue # translation comment in older formats (e.g., TREC 3 Spanish track)
+        elif line.startswith('</top>'):
+            if title is not None:
+                yield 'topic', num, title.replace('\t', ' ').strip()
+            if desc is not None:
+                yield 'desc', num, desc.replace('\t', ' ').strip()
+            if narr is not None:
+                yield 'narr', num, narr.replace('\t', ' ').strip()
+            num, title, desc, narr, reading = None, None, None, None, None
+        elif line.startswith('<num>'):
+            num = line[len('<num>'):].replace('Number:', '').replace('</num>', '').strip()
+            reading = None
+        elif line.startswith(f'<{xml_prefix}title>'):
+            title = line[len(f'<{xml_prefix}title>'):len(f'</{xml_prefix}title>')].strip()
+        elif line.startswith(f'<{xml_prefix}desc>'):
+            desc = line[len(f'<{xml_prefix}desc>'):len(f'</{xml_prefix}desc>')].strip()
+        elif line.startswith(f'<{xml_prefix}narr>'):
+            narr = line[len(f'<{xml_prefix}narr>'):len(f'</{xml_prefix}narr>')].strip()
