@@ -45,7 +45,7 @@ class ClefEnglishDataset(datasets.ClefDataset):
             self._init_topics(
                 subset=f'{lang}{year}',
                 topic_files=[f'clef03-04/Top-{lang}{year}.txt'],
-                heldout_topics=HELDOUT_VALD_03 if lang == 'en' and year == '03' else [],
+                heldout_topics=HELDOUT_VALD_03 if year == '03' else [],
                 qid_prefix='C',
                 encoding="ISO-8859-1" if lang == 'en' else 'UTF-8-SIG',
                 xml_prefix=f'{lang}-'.upper(),
@@ -53,7 +53,7 @@ class ClefEnglishDataset(datasets.ClefDataset):
 
             self._init_qrels(
                 subset=f'{lang}{year}',
-                heldout_topics=HELDOUT_VALD_03 if lang == 'en' and year == '03' else [],
+                heldout_topics=HELDOUT_VALD_03 if year == '03' else [],
                 qrels_files=[f'clef03-04/qrels_en_20{year}'],
                 force=force)
 

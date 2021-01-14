@@ -12,6 +12,7 @@ from onir.datasets import trec_arabic, trec_mandarin, trec_spanish
 # Datasets for CLEF
 from onir.datasets.clef_dataset import ClefDataset
 from onir.datasets.clef_en import ClefEnglishDataset
+from onir.datasets.clef_ru import ClefRussianDataset
 
 # Default iteration functions over datasets
 from onir.datasets.query_iter import QueryIter as query_iter
