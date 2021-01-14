@@ -1,6 +1,6 @@
 ./
 train_ds=clef0304_en
-test_ds=clef0304_en
+valid_ds=clef0304_en
 test_ds=clef0304_en
 train_ds.subset=en03
 valid_ds.subset=en03-heldout

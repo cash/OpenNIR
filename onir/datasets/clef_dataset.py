@@ -57,7 +57,7 @@ class ClefDataset(datasets.IndexBackedDataset):
                 for t, qid, text in parse_clef_query_format(opener(topic_file, encoding=encoding), xml_prefix):
                     if qid_prefix is not None:
                         qid = qid.replace(qid_prefix, '')
-                    if t in heldout_topics:
+                    if qid in heldout_topics:
                         topics_heldout.append((t, qid, text))
                     else:
                         topics.append((t, qid, text))
@@ -106,8 +106,8 @@ def parse_clef_query_format(file, xml_prefix=None):
             num = line[len('<num>'):].replace('Number:', '').replace('</num>', '').strip()
             reading = None
         elif line.startswith(f'<{xml_prefix}title>'):
-            title = line[len(f'<{xml_prefix}title>'):len(f'</{xml_prefix}title>')].strip()
+            title = line[len(f'<{xml_prefix}title>'):-len(f'</{xml_prefix}title>')-1].strip()
         elif line.startswith(f'<{xml_prefix}desc>'):
-            desc = line[len(f'<{xml_prefix}desc>'):len(f'</{xml_prefix}desc>')].strip()
+            desc = line[len(f'<{xml_prefix}desc>'):-len(f'</{xml_prefix}desc>')-1].strip()
         elif line.startswith(f'<{xml_prefix}narr>'):
-            narr = line[len(f'<{xml_prefix}narr>'):len(f'</{xml_prefix}narr>')].strip()
+            narr = line[len(f'<{xml_prefix}narr>'):-len(f'</{xml_prefix}narr>')-1].strip()

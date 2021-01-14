@@ -314,7 +314,7 @@ def parse_query_format(file, xml_prefix=None):
                     yield 'narr', num, narr.replace('\t', ' ').strip()
                 num, title, desc, narr, reading = None, None, None, None, None
             elif line.startswith('<num>'):
-                num = line[len('<num>'):].replace('Number:', '').strip()
+                num = line[len('<num>'):].replace('Number:', '').replace('</num>', '').strip()
                 reading = None
             elif line.startswith(f'<{xml_prefix}title>'):
                 title = line[len(f'<{xml_prefix}title>'):].strip()
