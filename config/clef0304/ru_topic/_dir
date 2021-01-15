@@ -1,0 +1,7 @@
+../
+train_ds=clef0304_ru
+valid_ds=clef0304_ru
+test_ds=clef0304_ru
+train_ds.querysource=topic
+valid_ds.querysource=topic
+test_ds.querysource=topic

@@ -43,7 +43,7 @@ class Qrels:
             self._iter = None # will consume iterator
             return it
         if 'df' in self._data:
-            return self._data['df']
+            return iter(self._data['df'].to_records(index=False))
         if 'dict' in self._data:
             return ((qid, did, score) for qid, docs in self._data['dict'].items() \
                                       for did, score in docs.items())
@@ -116,6 +116,9 @@ def write_qrels_dict(file, qrels_dict, sep=' '):
 
 def write_qrels_dict_(qrels_dict, file):
     return write_qrels_dict(file, qrels_dict)
+
+def write_qrels_df(qrels_df, file, sep=' '):
+    Qrels(qrels_df).save_file(file, sep=sep)
 
 
 def read_run(file):

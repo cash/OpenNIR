@@ -89,7 +89,6 @@ def _join_paths(paths):
 def parse_clef_query_format(file, xml_prefix=None):
     if xml_prefix is None:
         xml_prefix = ''
-
     num, title, desc, narr, reading = None, None, None, None, None
     for line in file:
         if line.startswith('**'):
