@@ -1,4 +1,5 @@
 ./
+vocab.bert_base=bert-base-uncased
 train_ds=clef0304_en
 valid_ds=clef0304_en
 test_ds=clef0304_en

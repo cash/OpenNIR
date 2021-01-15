@@ -43,6 +43,9 @@ class ClefRussianDataset(datasets.ClefDataset):
 
     def _get_index_for_batchsearch(self):
         return self.index_russian
+    
+    def _get_index(self, record):
+        return self.index_russian
 
     def _get_docstore(self):
         return self.doc_store

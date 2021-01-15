@@ -5,7 +5,6 @@ trainer.grad_acc_batch=1
 ranker.qlen=90
 ranker.dlen=1500
 vocab=bert
-vocab.bert_base=bert-base-uncased
 test_pred.run_threshold=100
 pipeline.test=True
 
