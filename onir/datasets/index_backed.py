@@ -68,11 +68,12 @@ class IndexBackedDataset(datasets.Dataset):
         return sum(1 for _ in self.all_query_ids())
 
     def _load_run_base(self, index, subset, rankfn, ranktopk, fmt='dict', fscache=False, memcache=True):
+        querysource = 'default' if 'querysource' not in self.config else self.config['querysource']
         key = (index.path(), subset, rankfn, ranktopk, fmt)
         if memcache and key in self.run_cache:
             return self.run_cache[key]
         index_path = index.path().rstrip('/')
-        run_dir = f'{index_path}.{subset}.runs'
+        run_dir = f'{index_path}.{subset}.{querysource}.runs'
         os.makedirs(run_dir, exist_ok=True)
         run_path = os.path.join(run_dir, f'{rankfn}.{ranktopk}.run')
         run_path_cache = f'{run_path}.{fmt}.cache'
