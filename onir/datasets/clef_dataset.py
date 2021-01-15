@@ -10,7 +10,7 @@ class ClefDataset(datasets.IndexBackedDataset):
     """
     Abstract class for CLEF03/04 dataset
     """
-    DUA = """Will use CLEF03 04 data locally"""
+    DUA = """Will use CLEF03 04 data locally from `source_path`"""
 
 
     @staticmethod
@@ -20,6 +20,7 @@ class ClefDataset(datasets.IndexBackedDataset):
             'subset': '', #TODO supporting 03/04 en/ru topics
             'ranktopk': 1000,
             'querysource': 'topic',
+            'source_path': ''
         })
         return result
 
@@ -52,7 +53,7 @@ class ClefDataset(datasets.IndexBackedDataset):
         heldout_topics = heldout_topics or []
         if (force or not os.path.exists(topicf)) and self._confirm_dua():
             topics, topics_heldout = [], []
-            for topic_file in _join_paths(topic_files):
+            for topic_file in _join_paths(self.config['source_path'], topic_files):
                 opener = gzip.open if topic_file.endswith('.gz') else open
                 for t, qid, text in parse_clef_query_format(opener(topic_file, encoding=encoding), xml_prefix):
                     if qid_prefix is not None:
@@ -70,21 +71,21 @@ class ClefDataset(datasets.IndexBackedDataset):
         qrelsf_heldout = os.path.join(util.path_dataset(self), f'{subset}-heldout.qrels')
         heldout_topics = heldout_topics or []
         if (force or not os.path.exists(qrelsf)) and self._confirm_dua():
-            qrels = itertools.chain(*(trec.read_qrels(open(f)) for f in _join_paths(qrels_files) ))
+            qrels = itertools.chain(*(trec.read_qrels(open(f)) for f in _join_paths(self.config['source_path'], qrels_files) ))
             trec.write_qrels(qrelsf, (q for q in qrels if q[0] not in heldout_topics))
             if len(heldout_topics) > 0:
-                qrels = itertools.chain(*(trec.read_qrels(open(f)) for f in _join_paths(qrels_files) ))
+                qrels = itertools.chain(*(trec.read_qrels(open(f)) for f in _join_paths(self.config['source_path'], qrels_files) ))
                 trec.write_qrels(qrelsf_heldout, (q for q in qrels if q[0] in heldout_topics))
 
 
     def _init_collection_iter(self, doc_paths, encoding):
-        doc_paths = _join_paths(doc_paths)
+        doc_paths = _join_paths(self.config['source_path'], doc_paths)
         doc_iter = itertools.chain(*(trec.parse_doc_format(p, encoding) for p in doc_paths))
         doc_iter = self.logger.pbar(doc_iter, desc='documents')
         return doc_iter
 
-def _join_paths(paths):
-    return (os.path.join(util.get_working(), 'datasets', p) for p in paths)
+def _join_paths(source, paths):
+    return (os.path.join(source, p) for p in paths)
 
 def parse_clef_query_format(file, xml_prefix=None):
     if xml_prefix is None:

@@ -31,7 +31,7 @@ class ClefRussianDataset(datasets.ClefDataset):
         result.update({
             'subset': 'all',
             'ranktopk': 1000,
-            'querysource': 'topic'
+            'querysource': 'orgRU-topic'
         })
         return result
 
@@ -52,51 +52,42 @@ class ClefRussianDataset(datasets.ClefDataset):
 
     def _lang(self):
         return 'ru'
+    
+    def _load_topics(self, topic_files, source_prefix, qid_prefix=None, encoding=None, xml_prefix=None):
+        topics = []
+        for topic_file in _join_paths(self.config['source_path'], topic_files):
+            for t, qid, text in parse_clef_query_format(open(topic_file, encoding=encoding), xml_prefix=xml_prefix):
+                if qid_prefix:
+                    qid = qid.replace(qid_prefix, '')
+                topics.append((source_prefix+t, qid, text))
+        return topics
 
     def init(self, force=False):
         # Support Russian queries for now 
-        # TODO: make two versions of subset for en and ru
         base_path = util.path_dataset(self)
 
-        all_qrels = trec.read_qrels_dict(open(os.path.join(util.get_working(), 'datasets', 'clef03-04/qrels_ru_2003')))
-        all_qrels.update(trec.read_qrels_dict(open(os.path.join(util.get_working(), 'datasets', 'clef03-04/qrels_ru_2004'))))
+        all_qrels = trec.read_qrels_dict(open(os.path.join(self.config['source_path'], 'qrels_ru_2003')))
+        all_qrels.update(trec.read_qrels_dict(open(os.path.join(self.config['source_path'], 'qrels_ru_2004'))))
         
-        all_topics = []
-        for topic_file in _join_paths(['clef03-04/Top-ru03.txt', 'clef03-04/Top-ru04.txt']):
-            for t, qid, text in parse_clef_query_format(open(topic_file, encoding='UTF-8-SIG'), xml_prefix='RU-'):
-                qid = qid.replace('C', '')
-                all_topics.append((t, qid, text))
+        all_topics = [
+            *self._load_topics(topic_files=['Top-ru03.txt', 'Top-ru04.txt'], source_prefix='orgRU-', 
+                               qid_prefix='C', encoding='UTF-8-SIG', xml_prefix='RU-'),
+            *self._load_topics(topic_files=['Top-en0304-gt-ru-filtered.txt'], source_prefix='googENRU-', 
+                               qid_prefix='C', encoding='UTF-8', xml_prefix='RU-')
+        ]
 
         for fold in FOLDS:
             fold_qrels_file = os.path.join(base_path, f'{fold}.qrels')
-            if (force or not os.path.exists(fold_qrels_file)):
+            if (force or not os.path.exists(fold_qrels_file)) and self._confirm_dua():
                 fold_qrels = {qid: dids for qid, dids in all_qrels.items() if qid in FOLDS[fold]}
                 trec.write_qrels_dict(fold_qrels_file, fold_qrels)
-            
             fold_topic_file = os.path.join(base_path, f'{fold}.topics')
-            if (force or not os.path.exists(fold_topic_file)):
+            if (force or not os.path.exists(fold_topic_file)) and self._confirm_dua():
                 plaintext.write_tsv(fold_topic_file, [ r for r in all_topics if r[1] in FOLDS[fold] ])
-
-        # # For reference
-        # for lang, year in product(['en', 'ru'], ['03', '04']):
-        #     self._init_topics(
-        #         subset=f'{lang}{year}',
-        #         topic_files=[f'clef03-04/Top-{lang}{year}.txt'],
-        #         heldout_topics=HELDOUT_VALD_03 if year == '03' else [],
-        #         qid_prefix='C',
-        #         encoding="ISO-8859-1" if lang == 'en' else 'UTF-8-SIG',
-        #         xml_prefix=f'{lang}-'.upper(),
-        #         force=force)
-
-        #     self._init_qrels(
-        #         subset=f'{lang}{year}',
-        #         heldout_topics=HELDOUT_VALD_03 if year == '03' else [],
-        #         qrels_files=[f'clef03-04/qrels_ru_20{year}'],
-        #         force=force)
 
         self._init_indices_parallel(
             indices=[self.index_russian, self.doc_store],
             doc_iter=self._init_collection_iter(
-                doc_paths=['clef03-04/rudocs'],
+                doc_paths=['rudocs'],
                 encoding="utf-8"),
             force=force)
