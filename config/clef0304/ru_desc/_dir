@@ -1,8 +1,0 @@
-../
-vocab.bert_base=bert-base-multilingual-uncased
-train_ds=clef0304_ru
-valid_ds=clef0304_ru
-test_ds=clef0304_ru
-train_ds.querysource=orgRU-desc
-valid_ds.querysource=orgRU-desc
-test_ds.querysource=orgRU-desc

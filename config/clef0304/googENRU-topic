@@ -1,0 +1,12 @@
+./
+train_ds.docversion=org
+valid_ds.docversion=org
+test_ds.docversion=org
+train_ds.doclang=ru
+valid_ds.doclang=ru
+test_ds.doclang=ru
+
+vocab.bert_base=bert-base-multilingual-uncased
+train_ds.querysource=googENRU-topic
+valid_ds.querysource=googENRU-topic
+test_ds.querysource=googENRU-topic

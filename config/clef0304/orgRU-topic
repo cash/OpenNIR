@@ -1,8 +1,12 @@
-../
+./
+train_ds.docversion=org
+valid_ds.docversion=org
+test_ds.docversion=org
+train_ds.doclang=ru
+valid_ds.doclang=ru
+test_ds.doclang=ru
+
 vocab.bert_base=bert-base-multilingual-uncased
-train_ds=clef0304_ru
-valid_ds=clef0304_ru
-test_ds=clef0304_ru
 train_ds.querysource=orgRU-topic
 valid_ds.querysource=orgRU-topic
 test_ds.querysource=orgRU-topic

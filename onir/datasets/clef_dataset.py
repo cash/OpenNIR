@@ -17,7 +17,7 @@ class ClefDataset(datasets.IndexBackedDataset):
     def default_config():
         result = datasets.IndexBackedDataset.default_config()
         result.update({
-            'subset': '', #TODO supporting 03/04 en/ru topics
+            'subset': '',
             'ranktopk': 1000,
             'querysource': 'topic',
             'source_path': ''
@@ -25,8 +25,9 @@ class ClefDataset(datasets.IndexBackedDataset):
         return result
 
     def path_segment(self):
+        #TODO: support multiple version of collection and drop backward support 
         result = '{name}_{rankfn}.{ranktopk}_{subset}'.format(**self.config, name=self.name)
-        if self.config['querysource'] != 'topic':
+        if self.config['querysource'] != self.default_config()['querysource']: # HACK: only to 
             result += '_{querysource}'.format(**self.config)
         return result
 
@@ -48,6 +49,7 @@ class ClefDataset(datasets.IndexBackedDataset):
         return trec.read_qrels_fmt(qrels_path, fmt)
 
     def _init_topics(self, subset, topic_files, heldout_topics=None, qid_prefix=None, encoding=None, xml_prefix=None, force=False, expected_md5=None):
+        """depreciated"""
         topicf = os.path.join(util.path_dataset(self), f'{subset}.topics')
         topicf_heldout = os.path.join(util.path_dataset(self), f'{subset}-heldout.topics')
         heldout_topics = heldout_topics or []
@@ -67,6 +69,7 @@ class ClefDataset(datasets.IndexBackedDataset):
                 plaintext.write_tsv(topicf_heldout, topics_heldout)
 
     def _init_qrels(self, subset, qrels_files, heldout_topics=None, force=False, expected_md5=None):
+        """depreciated"""
         qrelsf = os.path.join(util.path_dataset(self), f'{subset}.qrels')
         qrelsf_heldout = os.path.join(util.path_dataset(self), f'{subset}-heldout.qrels')
         heldout_topics = heldout_topics or []
