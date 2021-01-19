@@ -1,0 +1,12 @@
+./
+train_ds.docversion=mtruen20210115.scale18rm1prelim
+valid_ds.docversion=mtruen20210115.scale18rm1prelim
+test_ds.docversion=mtruen20210115.scale18rm1prelim
+train_ds.doclang=en
+valid_ds.doclang=en
+test_ds.doclang=en
+
+vocab.bert_base=bert-base-uncased
+train_ds.querysource=orgEN-topic
+valid_ds.querysource=orgEN-topic
+test_ds.querysource=orgEN-topic

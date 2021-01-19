@@ -1,0 +1,15 @@
+train_ds=trec9_chn
+valid_ds=trec9_chn
+test_ds=trec9_chn
+
+valid_pred.measures=map,map_rel-1,ndcg@20,p@20
+test_pred.measures=map,map_rel-1,ndcg@20,p@20
+pipeline.val_metric=map
+
+trainer.grad_acc_batch=1
+ranker.qlen=90
+ranker.dlen=1500
+
+vocab=bert
+test_pred.run_threshold=100
+pipeline.test=True

@@ -43,15 +43,6 @@ class ScaleMultilingualDataset(datasets.IndexBackedDataset):
     def _lang(self):
         return self.config['doclang']
     
-    def _load_topics(self, topic_files, source_prefix, qid_prefix=None, encoding=None, xml_prefix=None):
-        topics = []
-        for topic_file in _join_paths(self.config['q_source_path'], topic_files):
-            for t, qid, text in parse_clef_query_format(open(topic_file, encoding=encoding), xml_prefix=xml_prefix):
-                if qid_prefix:
-                    qid = qid.replace(qid_prefix, '')
-                topics.append((source_prefix+t, qid, text))
-        return topics
-    
     def qrels(self, fmt='dict'):
         return self._load_qrels(self.config['subset'], fmt=fmt)
     
@@ -65,6 +56,16 @@ class ScaleMultilingualDataset(datasets.IndexBackedDataset):
         querysource = self.config['querysource']
         query_path = os.path.join(util.path_dataset(self), f'{subset}.topics')
         return {qid: text for t, qid, text in plaintext.read_tsv(query_path) if t == querysource}
+    
+    def _load_topics(self, topic_files, source_prefix, qid_prefix=None, encoding=None, xml_prefix=None, format='clef'):
+        topics = []
+        for topic_file in _join_paths(self.config['q_source_path'], topic_files):
+            parser = parse_clef_query_format if format == 'clef' else trec.parse_query_format
+            for t, qid, text in parser(open(topic_file, encoding=encoding), xml_prefix=xml_prefix):
+                if qid_prefix:
+                    qid = qid.replace(qid_prefix, '')
+                topics.append((source_prefix+t, qid, text))
+        return topics
     
     def _init_collection_iter(self, doc_paths, encoding):
         doc_iter = itertools.chain(*(trec.parse_doc_format(p, encoding) for p in doc_paths))

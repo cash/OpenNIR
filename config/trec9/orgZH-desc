@@ -1,0 +1,12 @@
+./
+train_ds.docversion=org
+valid_ds.docversion=org
+test_ds.docversion=org
+train_ds.doclang=zh
+valid_ds.doclang=zh
+test_ds.doclang=zh
+
+vocab.bert_base=bert-base-multilingual-uncased
+train_ds.querysource=orgZH-desc
+valid_ds.querysource=orgZH-desc
+test_ds.querysource=orgZH-desc
