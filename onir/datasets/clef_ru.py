@@ -3,7 +3,7 @@ import itertools
 from pytools import memoize_method
 from onir import util, datasets, indices
 from onir.interfaces import trec, plaintext
-from onir.datasets.clef_dataset import _join_paths, parse_clef_query_format
+from onir.datasets.scale_multilingual_dataset import _join_paths, parse_clef_query_format
 
 FOLDS = {
     'f1': {'192', '220', '157', '214', '164', '153', '211', '227', '216', '169', '215', '242', '250'},
@@ -21,7 +21,7 @@ FOLDS['all'] = _ALL
 
 
 @datasets.register('clef0304_ru')
-class ClefRussianDataset(datasets.IndexBackedDataset):
+class ClefRussianDataset(datasets.ScaleMultilingualDataset):
     """
     CLEF 03 04 Russian corpus
     """
@@ -42,51 +42,6 @@ class ClefRussianDataset(datasets.IndexBackedDataset):
         })
         return result
 
-    def __init__(self, config, vocab, logger):
-        super().__init__(config, logger, vocab)
-        base_path = os.path.join( util.path_dataset(self), config['docversion'])
-        self.index = indices.AnseriniIndex(os.path.join(base_path, 'anserini'), lang=config['doclang'])
-        self.doc_store = indices.SqliteDocstore(os.path.join(base_path, 'docs.sqllite'))
-
-    def path_segment(self):
-        result = '{name}@{docversion}_{rankfn}.{ranktopk}_{subset}_{querysource}'.format(**self.config, name=self.name)
-        return result
-
-    def _get_index_for_batchsearch(self):
-        return self.index
-    
-    def _get_index(self, record):
-        return self.index
-
-    def _get_docstore(self):
-        return self.doc_store
-
-    def _lang(self):
-        return self.config['doclang']
-    
-    def _load_topics(self, topic_files, source_prefix, qid_prefix=None, encoding=None, xml_prefix=None):
-        topics = []
-        for topic_file in _join_paths(self.config['q_source_path'], topic_files):
-            for t, qid, text in parse_clef_query_format(open(topic_file, encoding=encoding), xml_prefix=xml_prefix):
-                if qid_prefix:
-                    qid = qid.replace(qid_prefix, '')
-                topics.append((source_prefix+t, qid, text))
-        return topics
-    
-    def qrels(self, fmt='dict'):
-        return self._load_qrels(self.config['subset'], fmt=fmt)
-    
-    @memoize_method
-    def _load_qrels(self, subset, fmt):
-        qrels_path = os.path.join(util.path_dataset(self), f'{subset}.qrels')
-        return trec.read_qrels_fmt(qrels_path, fmt)
-
-    @memoize_method
-    def _load_queries_base(self, subset):
-        querysource = self.config['querysource']
-        query_path = os.path.join(util.path_dataset(self), f'{subset}.topics')
-        return {qid: text for t, qid, text in plaintext.read_tsv(query_path) if t == querysource}
-
     @memoize_method
     def _load_all_topics(self):
         return [
@@ -104,11 +59,6 @@ class ClefRussianDataset(datasets.IndexBackedDataset):
         all_qrels.update(trec.read_qrels_dict(open(os.path.join(self.config['q_source_path'], 'qrels_ru_2004'))))
         return all_qrels
     
-    def _init_collection_iter(self, doc_paths, encoding):
-        doc_iter = itertools.chain(*(trec.parse_doc_format(p, encoding) for p in doc_paths))
-        doc_iter = self.logger.pbar(doc_iter, desc='documents')
-        return doc_iter
-
     def init(self, force=False):
         # Support Russian queries for now 
         base_path = util.path_dataset(self)

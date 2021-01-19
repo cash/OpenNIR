@@ -10,8 +10,9 @@ from onir.datasets import antique, base, car, index_backed, msmarco, random, rob
 from onir.datasets import trec_arabic, trec_mandarin, trec_spanish
 
 # Datasets for CLEF
-from onir.datasets.clef_dataset import ClefDataset
-from onir.datasets.clef_en import ClefEnglishDataset
+# from onir.datasets.clef_dataset import ClefDataset
+# from onir.datasets.clef_en import ClefEnglishDataset
+from onir.datasets.scale_multilingual_dataset import ScaleMultilingualDataset
 from onir.datasets.clef_ru import ClefRussianDataset
 
 # Default iteration functions over datasets
