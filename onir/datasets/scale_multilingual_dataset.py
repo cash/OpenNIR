@@ -11,12 +11,10 @@ class ScaleMultilingualDataset(datasets.IndexBackedDataset):
         result = datasets.IndexBackedDataset.default_config()
         result.update({
             'docversion': 'org',
-            'doclang': 'ru',
+            'doclang': '',
             'd_source_path': '',
 
-            # 'subset': 'all',
             'ranktopk': 1000,
-            # 'querysource': 'orgRU-topic',
             'q_source_path': ''
         })
         return result

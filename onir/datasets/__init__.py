@@ -15,6 +15,8 @@ from onir.datasets import trec_arabic, trec_mandarin, trec_spanish
 from onir.datasets.scale_multilingual_dataset import ScaleMultilingualDataset
 from onir.datasets.clef_ru import ClefRussianDataset
 from onir.datasets.trec_9_chinese import Trec9ChineseDataset
+from onir.datasets.ht3 import HT3Dataset
+from onir.datasets.ht3_zh import HT3ChineseDataset
 
 # Default iteration functions over datasets
 from onir.datasets.query_iter import QueryIter as query_iter
