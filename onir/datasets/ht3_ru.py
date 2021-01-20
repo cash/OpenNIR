@@ -7,9 +7,9 @@ from onir.interfaces import trec
 FOLDS = {'all': {'001', '002', '003', '004', '005',
                  '006', '007', '008', '009', '010'}}
 
-@datasets.register('ht3_zh')
-class HT3ChineseDataset(datasets.HT3Dataset):
-    """HT3 Chinese dataset"""
+@datasets.register('ht3_ru')
+class HT3RussianDataset(datasets.HT3Dataset):
+    """HT3 Russian dataset"""
     DUA = """Will use HT3 data locally from and `d_source_path`, `q_source_path`"""
 
     @staticmethod
@@ -17,9 +17,9 @@ class HT3ChineseDataset(datasets.HT3Dataset):
         result = datasets.HT3Dataset.default_config()
         result.update({
             'docversion': 'mini-scale-V0.1',            
-            'doclang': 'zh',
+            'doclang': 'ru',
 
-            'qrelsversion': 'mini-cmn-V0.1',
+            'qrelsversion': 'mini-rus-V0.1',
             'querysource': 'mini_scale_dev_topics-title'
         })
         return result
@@ -34,7 +34,7 @@ class HT3ChineseDataset(datasets.HT3Dataset):
     @memoize_method
     def _load_all_qrels(self):
         all_qrels = trec.read_qrels_dict(
-            open(os.path.join(self.config['q_source_path'], 'mini_scale_cmn_qrelsV0.1'))
+            open(os.path.join(self.config['q_source_path'], 'mini_scale_rus_qrelsV0.1'))
         )
         return all_qrels
     
