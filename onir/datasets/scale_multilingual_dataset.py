@@ -102,32 +102,31 @@ def parse_clef_query_format(file, xml_prefix=None):
         # elif line.startswith(f'<{xml_prefix}narr>'):
         #     narr = line[len(f'<{xml_prefix}narr>'):-len(f'</{xml_prefix}narr>')-1].strip()
         
-        elif line.startswith(f'<{xml_prefix}title>'):
+        elif line.strip().startswith(f'<{xml_prefix}title>'):
             title = line[len(f'<{xml_prefix}title>'):].strip()
-            if title == '':
-                reading = 'title'
-            else:
-                title = title.replace(f'</{xml_prefix}title>').strip()
-                reading = None
-        elif line.startswith(f'<{xml_prefix}desc>'):
-            desc = ''
+            reading = 'title'
+        elif line.strip().startswith(f'<{xml_prefix}desc>'):
+            desc = line[len(f'<{xml_prefix}desc>'):].strip()
             reading = 'desc'
-        elif line.startswith(f'<{xml_prefix}narr>'):
-            narr = ''
+        elif line.strip().startswith(f'<{xml_prefix}narr>'):
+            narr = line[len(f'<{xml_prefix}narr>'):].strip()
             reading = 'narr'
 
         elif reading == 'desc':
             desc += line.strip() + ' '
-            if line.endswith(f'</{xml_prefix}desc>'):
-                desc = desc.replace(f'</{xml_prefix}desc>').strip()
-                reading = None
+            
         elif reading == 'narr':
             narr += line.strip() + ' '
-            if line.endswith(f'</{xml_prefix}narr>'):
-                narr = narr.replace(f'</{xml_prefix}narr>').strip()
-                reading = None
+            
         elif reading == 'title':
             title += line.strip() + ' '
-            if line.endswith(f'</{xml_prefix}title>'):
-                title = title.replace(f'</{xml_prefix}title>').strip()
-                reading = None
+        
+        if line.strip().endswith(f'</{xml_prefix}desc>'):
+            desc = desc.replace(f'</{xml_prefix}desc>', '').strip()
+            reading = None
+        if line.strip().endswith(f'</{xml_prefix}narr>'):
+            narr = narr.replace(f'</{xml_prefix}narr>', '').strip()
+            reading = None
+        if line.strip().endswith(f'</{xml_prefix}title>'):
+            title = title.replace(f'</{xml_prefix}title>', '').strip()
+            reading = None

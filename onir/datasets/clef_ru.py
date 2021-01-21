@@ -48,7 +48,12 @@ class ClefRussianDataset(datasets.ScaleMultilingualDataset):
             *self._load_topics(topic_files=['Top-en03.txt', 'Top-en04.txt'], source_prefix='orgEN-', 
                                qid_prefix='C', encoding='ISO-8859-1', xml_prefix='EN-'),
             *self._load_topics(topic_files=['Top-en0304-gt-ru-filtered.txt'], source_prefix='googENRU-', 
-                               qid_prefix='C', encoding='UTF-8', xml_prefix='RU-')
+                               qid_prefix='C', encoding='UTF-8', xml_prefix='RU-'),
+            #TODO: add interface so that the output from MT team doesn't need to be massaged
+            *self._load_topics(topic_files=['cleftopics.20210121-m2m100-1.2b.sgml'], source_prefix='mt0121-m2m100-1.2b-', 
+                               qid_prefix='C', encoding='UTF-8', xml_prefix='RU-'),
+            *self._load_topics(topic_files=['cleftopics.20210121-m2m100-418m.sgml'], source_prefix='mt0121-m2m100-418m-', 
+                               qid_prefix='C', encoding='UTF-8', xml_prefix='RU-'),
         ]
 
     @memoize_method

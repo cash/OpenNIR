@@ -48,7 +48,12 @@ class Trec9ChineseDataset(datasets.ScaleMultilingualDataset):
             *self._load_topics(topic_files=['topics/xling9-topics.chinese'], source_prefix='orgZH-', 
                                qid_prefix='CH', encoding='Big5', format='trec'),
             *self._load_topics(topic_files=['topics/xling9-topics.goog-enzh.txt'], source_prefix='googENZH-', 
-                               qid_prefix='CH', encoding='utf8', format='trec')   
+                               qid_prefix='CH', encoding='utf8', format='trec'),
+            #TODO: add interface so that the output from MT team doesn't need to be massaged
+            *self._load_topics(topic_files=['topics/trec9topics.20210121-m2m100-1.2b.sgml'], source_prefix='mt0121-m2m100-1.2b-', 
+                               qid_prefix='CH', encoding='UTF-8', xml_prefix=''),
+            *self._load_topics(topic_files=['topics/trec9topics.20210121-m2m100-418m.sgml'], source_prefix='mt0121-m2m100-418m-', 
+                               qid_prefix='CH', encoding='UTF-8', xml_prefix=''),
         ]
 
     @memoize_method
