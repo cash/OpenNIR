@@ -380,7 +380,7 @@ class AnseriniIndex(indices.BaseIndex):
                 total_topics += 1
             if current_file is not None:
                 topic_files.append(current_file.name)
-            current_file.close()
+                current_file.close()
             args = J.A_SearchArgs()
             parser = J.M_CmdLineParser(args)
             arg_args = [

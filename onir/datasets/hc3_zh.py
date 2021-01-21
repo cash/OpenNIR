@@ -7,14 +7,14 @@ from onir.interfaces import trec
 FOLDS = {'all': {'001', '002', '003', '004', '005',
                  '006', '007', '008', '009', '010'}}
 
-@datasets.register('ht3_zh')
-class HT3ChineseDataset(datasets.HT3Dataset):
-    """HT3 Chinese dataset"""
+@datasets.register('hc3_zh')
+class HC3ChineseDataset(datasets.HC3Dataset):
+    """HC3 Chinese dataset"""
     DUA = """Will use HT3 data locally from and `d_source_path`, `q_source_path`"""
 
     @staticmethod
     def default_config():
-        result = datasets.HT3Dataset.default_config()
+        result = datasets.HC3Dataset.default_config()
         result.update({
             'docversion': 'mini-scale-V0.1',            
             'doclang': 'zh',

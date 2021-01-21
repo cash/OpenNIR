@@ -7,8 +7,8 @@ from onir import util, datasets, indices
 from onir.interfaces import trec, plaintext
 
 
-class HT3Dataset(datasets.ScaleMultilingualDataset):
-    """Abstract class for HT3 CC dataset. 
+class HC3Dataset(datasets.ScaleMultilingualDataset):
+    """Abstract class for HC3 CC dataset. 
     - Support different versions of documents and qrels
     """
 
