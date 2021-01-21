@@ -20,7 +20,7 @@ class HT3RussianDataset(datasets.HT3Dataset):
             'doclang': 'ru',
 
             'qrelsversion': 'mini-rus-V0.1',
-            'querysource': 'mini_scale_dev_topics-title'
+            'querysource': 'mini-scale-dev-topics-title'
         })
         return result
 
@@ -28,7 +28,9 @@ class HT3RussianDataset(datasets.HT3Dataset):
     def _load_all_topics(self):
         return [
             *self._load_topics(topic_files=['mini_scale_dev_topics.jsonl'], 
-                               source_prefix='mini_scale_dev_topics-')
+                               source_prefix='mini-scale-dev-topics-'),
+            *self._load_topics(topic_files=['mini_scale_dev_topics.googENRU.jsonl'], 
+                               source_prefix='mini-scale-dev-topics.googENRU-'),
         ]
 
     @memoize_method
