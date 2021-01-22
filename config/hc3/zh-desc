@@ -1,0 +1,8 @@
+./
+train_ds=hc3_zh
+valid_ds=hc3_zh
+test_ds=hc3_zh
+
+train_ds.querysource=mini-scale-dev-topics.googENZH-desc
+valid_ds.querysource=mini-scale-dev-topics.googENZH-desc
+test_ds.querysource=mini-scale-dev-topics.googENZH-desc

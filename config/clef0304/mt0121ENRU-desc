@@ -1,0 +1,12 @@
+./
+train_ds.docversion=org
+valid_ds.docversion=org
+test_ds.docversion=org
+train_ds.doclang=ru
+valid_ds.doclang=ru
+test_ds.doclang=ru
+
+vocab.bert_base=bert-base-multilingual-uncased
+train_ds.querysource=mt0121-m2m100-418m-desc
+valid_ds.querysource=mt0121-m2m100-418m-desc
+test_ds.querysource=mt0121-m2m100-418m-desc
