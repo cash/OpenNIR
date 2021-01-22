@@ -51,9 +51,13 @@ class ClefRussianDataset(datasets.ScaleMultilingualDataset):
                                qid_prefix='C', encoding='UTF-8', xml_prefix='RU-'),
             #TODO: add interface so that the output from MT team doesn't need to be massaged
             *self._load_topics(topic_files=['cleftopics.20210121-m2m100-1.2b.sgml'], source_prefix='mt0121-m2m100-1.2b-', 
-                               qid_prefix='C', encoding='UTF-8', xml_prefix='RU-'),
+                               qid_prefix='C', encoding='UTF-8', xml_prefix='EN-'),
             *self._load_topics(topic_files=['cleftopics.20210121-m2m100-418m.sgml'], source_prefix='mt0121-m2m100-418m-', 
-                               qid_prefix='C', encoding='UTF-8', xml_prefix='RU-'),
+                               qid_prefix='C', encoding='UTF-8', xml_prefix='EN-'),
+            # *self._load_topics(topic_files=['cleftopics.20210121-scale18ts1.sgml'], source_prefix='mt0121-scale18ts1-', 
+            #                    qid_prefix='C', encoding='UTF-8', xml_prefix='RU-'),
+            # *self._load_topics(topic_files=['cleftopics.20210121-scale18rm1.sgml'], source_prefix='mt0121-scale18rm1-', 
+            #                    qid_prefix='C', encoding='UTF-8', xml_prefix='RU-'),
         ]
 
     @memoize_method
